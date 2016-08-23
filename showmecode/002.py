@@ -3,12 +3,8 @@
 
 
 import sys,re
-import jieba
-from collections import Counter
 
 
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 class Node(object):
     def __init__(self,val,p=0):
