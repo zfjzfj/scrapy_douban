@@ -100,7 +100,6 @@ class LinkList(object):
             post.next = q
             q.next = p
 
-
     def delete(self,index):
         if self.is_empty() or index<0 or index >self.getlength():
             print 'Linklist is empty.'
@@ -132,11 +131,21 @@ class LinkList(object):
         else:
             return -1
 
+    def traverse(self):
+        p = self.head
+        while True:
+            if p.next == 0:
+                print p.data
+                break
+            else:
+                print p.data
+                p = p.next
 
 l = LinkList()
 l.initlist([1,2,3,4,5,6,7,8,9])
-print l.getlength()
 
+print l.traverse()
+'''
 print l.getitem(4)
 l.append(6)
 print l.getitem(5)
@@ -150,3 +159,4 @@ l.delete(5)
 print l.getitem(5)
 
 l.index(5)
+'''
