@@ -20,26 +20,34 @@ class Tree(TreeNode):
             tree.r_child = TreeNode()
             self.create_tree(tree.r_child)
 
-    def insertNode(self, tree):
+    def insertNode(self, node):
         if self.data == "#":
-            self.data = tree.data
-            self.l_child = tree.l_child
-            self.r_child = tree.r_child
-            return
-        print self.data,tree.data
+            self.data = node.data
+            return "ok"
 
-        if tree.data < self.data:
-            self.l_child = tree
+        if node.data < self.data:
+            if self.l_child is None:
+                self.l_child = Tree()
+                self = self.l_child
+                self.data = node.data
+            else:
+                self = self.l_child
+                self.insertNode(node)
         else:
-            self.r_child = tree
+            if self.r_child is None:
+                self.r_child = Tree()
+                self = self.r_child
+                self.data = node.data
+            else:
+                self = self.r_child
+                self.insertNode(node)
 
 
     def insertdata(self, data):
         for i in data:
-            print i
             node = TreeNode()
             node.data = i
-            self.insertNode(node)
+            print i,self.insertNode(node)
 
     #visit a tree node
     def visit(self, tree):
@@ -78,10 +86,14 @@ class Tree(TreeNode):
 
 t = TreeNode()
 tree = Tree()
-tree.insertdata([10,9,8])
-tree.pre_order(t)
-
-
+print tree
+print tree.data
+tree.insertdata([1,3,5,2,18,30,25,21,22,39,10,7,8,6,4])
+tree.pre_order(tree)
+print
+tree.in_order(tree)
+print
+tree.post_order(tree)
 
 
 '''
