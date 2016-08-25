@@ -34,6 +34,7 @@ class Tree(TreeNode):
             else:
                 self = self.l_child
                 self.insertNode(node)
+                return "ok"
         else:
             if self.r_child is None:
                 self.r_child = Tree()
@@ -43,6 +44,7 @@ class Tree(TreeNode):
             else:
                 self = self.r_child
                 self.insertNode(node)
+                return "ok"
 
 
     def insertdata(self, data):
