@@ -4,6 +4,7 @@
 class TreeNode(object):
     def __init__(self):
         self.data = '#'
+        self.bs = None
         self.l_child = None
         self.r_child = None
 
@@ -20,10 +21,20 @@ class Tree(TreeNode):
             tree.r_child = TreeNode()
             self.create_tree(tree.r_child)
 
+
+    def getTreeBanlance(self,tree):
+        tree.bs = self.getDepth(tree.l_child) - self.getDepth(tree.r_child)
+        if tree.l_child is not None:
+            self.getTreeBanlance(tree.l_child)
+        if tree.r_child is not None:
+            self.getTreeBanlance(tree.r_child)
+
     def insertNode(self, node):
         if self.data == "#":
             self.data = node.data
+            self.l_child = self.r_child = None
             return "ok"
+
 
         if node.data < self.data:
             if self.l_child is None:
@@ -43,17 +54,39 @@ class Tree(TreeNode):
                 self.insertNode(node)
 
 
+    def ll(self,tree):
+        node = tree.l_child.r_child
+        root = tree.l_child
+        tree.l_child = None
+        root.r_child = tree
+        root.r_child.l_child = node
+        return root
+
     def insertdata(self, data):
         for i in data:
             node = TreeNode()
             node.data = i
-            print i,self.insertNode(node)
+            self.insertNode(node)
+            #print self.getDepth(self),self.getDepth(self.l_child)
+            left = self.getDepth(self.l_child)
+            right = self.getDepth(self.r_child)
+
+            if left - right >= 2:
+                print "-------------"
+                self.pre_order(self)
+                #print self.getDepth(self),self.getDepth(self.l_child),"left"
+                self = self.ll(self)
+                print "---newtree---\n"
+                self.pre_order(self)
+        return self
+
 
     #visit a tree node
     def visit(self, tree):
         #输入#号代表空树
         if tree.data is not '#':
-            print str(tree.data) + '\t',
+            print str(tree.data) + '|' + str(tree.bs)  + "\t",
+
     #先序遍历
     def pre_order(self, tree):
         if tree is not None:
@@ -84,18 +117,22 @@ class Tree(TreeNode):
 
 t = TreeNode()
 tree = Tree()
-print tree
-print tree.data
 
-tree.insertdata([1,3,5,2,18,30,25,21,22,39,10,7,8,6,4])
-# tree.insertdata([10,9,8,7,6,5,4,3,2,1])
-tree.pre_order(tree)
+#tree.insertdata([1,3,5,2,18,30,25,21,22,39,10,7,8,6,4])
+tree = tree.insertdata([10,9,8,7,6,5])
 print
+print "depth is ",tree.getDepth(tree)
+
+#tree.getTreeBanlance(tree)
+
+print '\n'
 tree.in_order(tree)
+print
+tree.pre_order(tree)
 print
 tree.post_order(tree)
 print
-print "defpth is ",tree.getDepth(tree)
+
 
 '''
 t = TreeNode()
