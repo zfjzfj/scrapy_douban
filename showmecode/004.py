@@ -30,21 +30,17 @@ class Tree(TreeNode):
                 self.l_child = Tree()
                 self = self.l_child
                 self.data = node.data
-                return "ok"
             else:
                 self = self.l_child
                 self.insertNode(node)
-                return "ok"
         else:
             if self.r_child is None:
                 self.r_child = Tree()
                 self = self.r_child
                 self.data = node.data
-                return "ok"
             else:
                 self = self.r_child
                 self.insertNode(node)
-                return "ok"
 
 
     def insertdata(self, data):
@@ -82,24 +78,24 @@ class Tree(TreeNode):
     def getDepth(self, tree):
         if tree is None:
             return 0
-
         tree_left = self.getDepth(tree.l_child)
         tree_right = self.getDepth(tree.r_child)
-
         return 1 + (tree_left >= tree_right and tree_left or tree_right)
 
 t = TreeNode()
 tree = Tree()
 print tree
 print tree.data
-# tree.insertdata([1,3,5,2,18,30,25,21,22,39,10,7,8,6,4])
-tree.insertdata([10,9,8,7,6,5,4,3,2,1])
+
+tree.insertdata([1,3,5,2,18,30,25,21,22,39,10,7,8,6,4])
+# tree.insertdata([10,9,8,7,6,5,4,3,2,1])
 tree.pre_order(tree)
 print
 tree.in_order(tree)
 print
 tree.post_order(tree)
-
+print
+print "defpth is ",tree.getDepth(tree)
 
 '''
 t = TreeNode()
