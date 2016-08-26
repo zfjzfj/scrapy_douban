@@ -21,7 +21,7 @@ class Graph(object):
         for i in range(1,100):
             self.adjlist.append(VertexNode())
 
-        for i,v in enumerate(["v0","v1","v2","v3"]):
+        for i,v in enumerate([1,2,3,4]):
             self.adjlist[i].data = v
             self.adjlist[i].firstedge = None
 
