@@ -25,7 +25,7 @@ class Graph(object):
             self.adjlist[i].data = "v" + str(v)
             self.adjlist[i].firstedge = None
 
-        for e in range(0,5):
+        for e in range(0,enum):
             print ("please input the edge number of (vi,vj)")
             p = "v" + str(input())
             q = "v" + str(input())
