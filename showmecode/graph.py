@@ -22,25 +22,25 @@ class Graph(object):
             self.adjlist.append(VertexNode())
 
         for i,v in enumerate([1,2,3,4]):
-            self.adjlist[i].data = v
+            self.adjlist[i].data = "v" + str(v)
             self.adjlist[i].firstedge = None
 
-        for e in range(0,5):
+        for e in range(0,enum):
             print ("please input the edge number of (vi,vj)")
-            p = input()
-            q = input()
+            p = "v" + str(input())
+            q = "v" + str(input())
             m = self._locate(self,p)
             n = self._locate(self,q)
+            if m != -1 and n != -1:
+                edgei = EdgeNode()
+                edgei.adjvex = n
+                edgei.next = self.adjlist[m].firstedge
+                self.adjlist[m].firstedge = edgei
 
-            edgei = EdgeNode()
-            edgei.adjvex = n
-            edgei.next = self.adjlist[m].firstedge
-            self.adjlist[m].firstedge = edgei
-
-            edgej = EdgeNode()
-            edgej.adjvex = m
-            edgej.next = self.adjlist[n].firstedge
-            self.adjlist[n].firstedge = edgej
+                edgej = EdgeNode()
+                edgej.adjvex = m
+                edgej.next = self.adjlist[n].firstedge
+                self.adjlist[n].firstedge = edgej
 
     def _locate(self,g,ch):
         for i in range(0,len(g.adjlist)):
@@ -48,7 +48,6 @@ class Graph(object):
         return -1
 
     def printGraph(self,g):
-        print "print Graph"
         i = 0
         while (i <= 100 and g.adjlist[i].firstedge):
             print g.adjlist[i].data
