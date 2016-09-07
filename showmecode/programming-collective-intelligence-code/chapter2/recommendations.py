@@ -184,7 +184,7 @@ def getRecommendedItems(prefs,itemMatch,user):
   rankings.reverse( )
   return rankings
 
-def loadMovieLens(path='/data/movielens'):
+def loadMovieLens(path='/work/data/movielens'):
   # Get movie titles
   movies={}
   for line in open(path+'/u.item'):
