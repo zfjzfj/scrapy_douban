@@ -12,6 +12,16 @@ class HBA(object):
         self.warning_report = ""
 
     def getSysteminfo(self):
+        '''
+        print(platform.machine())
+        print(platform.node())
+        print(platform.platform(True))
+        print(platform.system())
+        print(platform.uname())
+        print(platform.architecture())
+        print(platform.platform() + ' ' + platform.architecture()[0])
+        print (os_bits())
+        '''
         return platform.system()
 
     def machine(self):
@@ -28,16 +38,6 @@ class HBA(object):
         machine2bits = {'AMD64': 64, 'x86_64': 64, 'i386': 32, 'x86': 32}
         return machine2bits.get(machine, None)
 
-'''
-print(platform.machine())
-print(platform.node())
-print(platform.platform(True))
-print(platform.system())
-print(platform.uname())
-print(platform.architecture())
-print(platform.platform() + ' ' + platform.architecture()[0])
-print (os_bits())
-'''
 if __name__ == '__main__':
     hba =  HBA()
     print hba.os_bits()
