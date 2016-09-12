@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-#
 
 class EdgeNode(object):
     def __init__(self):
