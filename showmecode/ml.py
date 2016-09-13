@@ -72,6 +72,7 @@ for i in range(0,order+1):
     matB.append(ty)
 
 matB=numpy.array(matB)
+import pdb; pdb.set_trace()
 
 matAA=numpy.linalg.solve(matA,matB)
 #画出拟合后的曲线
