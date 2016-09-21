@@ -304,6 +304,5 @@ dirs.varLogDir%s.topic = app.win.netconn
 
 
 if __name__ == '__main__':
-    print  adptive_conf_toflume("/app/mac")
-    # init_logger()
-    # work()
+    init_logger()
+    work()

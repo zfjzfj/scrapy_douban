@@ -245,10 +245,25 @@ function download_flume {
     esac
 }
 
+function adaptive_conf_toflume {
+    typeset conf1="/opt/flume/conf/flume-conf.properties"
+    typeset conf2="/opt/flume/conf/collect-conf.properties"
+    typeset conf3="/opt/flume/conf/predator-conf.properties"
+    for conf in $conf1 $conf2 $conf3
+    do
+        if [[ -f ${conf} ]]
+        then
+            echo $conf
+        fi
+    done
+    logerr "flume config file is not exists"
+    exit 188
+}
 
 function add_config {
     # typeset conf="/opt/flume/conf/flume-conf.properties"
-    typeset conf="/opt/flume/conf/collect-conf.properties"
+    #typeset conf="/opt/flume/conf/collect-conf.properties"
+    typeset conf=$(adaptive_conf_toflume)
     log "checking flume existence"
     # check if flume has been installed
     if [[ ! -f ${conf} ]]
@@ -688,7 +703,6 @@ function main {
     add_config
     check_flume_daemon
 }
-
 
 main $*
 exit $?
