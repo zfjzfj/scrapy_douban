@@ -178,12 +178,23 @@ def backup_flume_conf(conf):
     logging.info('backup flume conf : [%s]' % new_conf)
     shutil.copy(conf, new_conf)
 
+def adptive_conf_toflume(confdir):
+    conf1=os.path.join(confdir,"flume-conf.properties")
+    conf2=os.path.join(confdir,"collect-conf.properties")
+    conf3=os.path.join(confdir,"flume-conf.properties")
+    for conf in [conf1,conf2,conf3]:
+        if os.path.exists(conf):
+            return conf
+    return None
 
 def set_flume(base):
     '''Set flume config
     '''
     base_conf = os.path.join(base, 'conf')
-    conf = os.path.join(base_conf, 'flume-conf.properties')
+    conf = adptive_conf_toflume(base_conf)
+    if not conf:
+        logging.error("%s conf file of flume is not exists,and exit programe" % (conf))
+        exit()
     with open(conf, 'r') as f:
         con = f.read()
     # check if has been set
@@ -293,5 +304,6 @@ dirs.varLogDir%s.topic = app.win.netconn
 
 
 if __name__ == '__main__':
-    init_logger()
-    work()
+    print  adptive_conf_toflume("/app/mac")
+    # init_logger()
+    # work()
