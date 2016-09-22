@@ -245,16 +245,104 @@ function download_flume {
     esac
 }
 
+function write_early_flume_conf {
+    typeset content
+    content=$(awk -v labels="${labels}" -v targets="${targets}" '
+        $1=="dirs" {
+            printf "%s %s\n",$0,labels;
+            num=NF-2+split(labels,a," ");
+        }
+        $1=="dirs.thread" {
+            printf "%s = %s\n",$1,num;
+        }
+        $1!="dirs" && $1!="dirs.thread" { print $0; }
+        END {
+            len=split(targets,a," "); split(labels,b," ");
+            for(i=1;i<=len;i++) c[a[i]]=b[i];
+            for(key in c) {
+                label=c[key];
+                printf "\n";
+                printf "dirs.%s.path = /usr/local/scripts/apps\n",label;
+                len=split(key,fn,"."); fkey=fn[len];
+                printf "dirs.%s.file-pattern = \^(%s.csv)\$\n",label,fkey;
+                printf "dirs.%s.cpusleep = 200\n",label;
+                printf "dirs.%s.bufMax = 1048576\n",label;
+                printf "dirs.%s.code = GBK\n",label;
+                printf "dirs.%s.redFromBegin = false\n",label;
+                printf "dirs.%s.otherInfo = SOURCE_TYPE,,opsware\n",label;
+                printf "dirs.%s.isWindows = false\n",label;
+                printf "dirs.%s.encode = 0\n",label;
+                printf "dirs.%s.topic = app.%s\n",label,key;
+            }
+        }' ${conf} 2>/dev/null)
+}
+
+function write_latest_flume_conf {
+    #
+    # sample:
+    # varLogDir5.analyser=varLogDir5-an
+    # varLogDir5.path=/usr/local/scripts/apps
+    # varLogDir5.pattern=^(netconn.csv)$
+    # varLogDir5.instant=true
+    # varLogDir5.isRecursive=false
+    # varLogDir5-an.encode=UTF-8
+    # varLogDir5-an.position=-1
+    # varLogDir5-an.extends.SOURCE_TYPE=opsware
+    # varLogDir5-an.extends.TOPIC=app.netconn
+    #
+    # sample:
+    # process.watcher=varLogDir2 varLogDir3 varLogDir varLogDir4
+    #
+    typeset content
+    content=$(awk -v labels="${labels}" -v targets="${targets}" -F'=' '
+        $1=="process.watcher" {
+            printf "%s %s\n",$0,labels;
+        }
+        $1!="process.watcher" { print $0; }
+        END {
+            len=split(targets,a," "); split(labels,b," ");
+            for(i=1;i<=len;i++) c[a[i]]=b[i];
+            for(key in c) {
+                label=c[key];
+                printf "\n";
+                printf "%s.analyser=%s-an\n",label,label;
+                printf "%s.path=/usr/local/scripts/apps\n",label;
+                len=split(key,fn,"."); fkey=fn[len];
+                printf "%s.file-pattern = \^(%s.csv)\$\n",label,fkey;
+                printf "%s.instant=true\n",label;
+                printf "%s.isRecursive=false\n",label;
+                printf "%s-an.encode=UTF-8\n",label;
+                printf "%s-an.position=-1\n",label;
+                printf "%s-an.extends.SOURCE_TYPE=opsware\n",label;
+                printf "%s.TOPIC=app.%s\n",label,key;
+            }
+        }' ${conf} 2>/dev/null)
+
+}
+function write_flume_conf {
+
+
+
+    
+}
 function adaptive_conf_toflume {
     typeset conf1="/opt/flume/conf/flume-conf.properties"
+    typeset conf2dir="/opt/flume/conf"
     typeset conf2="/opt/flume/conf/collect-conf.properties"
+    typeset conf3dir="/opt/predator/client-core/plugins/flume/conf"
     typeset conf3="/opt/predator/client-core/plugins/flume/conf/collect-conf.properties"
-    for conf in $conf1 $conf2 $conf3
+    for conf in $conf3 $con3dir $conf2 $conf2dir $conf1
     do
-        if [[ -f ${conf} ]]
+        if [[ -e ${conf} ]]
         then
-            echo $conf
-            break
+            if [[ -f ${conf} ]]
+            then
+                echo $conf
+                break
+            else
+                echo $conf/collect-conf.properties
+                break
+            fi
         fi
     done
 }
@@ -368,75 +456,6 @@ function add_config {
     #
     log "generating content for flume conf setting"
     # add label to head
-    typeset content
-    # content=$(awk -v labels="${labels}" -v targets="${targets}" '
-    #     $1=="dirs" {
-    #         printf "%s %s\n",$0,labels;
-    #         num=NF-2+split(labels,a," ");
-    #     }
-    #     $1=="dirs.thread" {
-    #         printf "%s = %s\n",$1,num;
-    #     }
-    #     $1!="dirs" && $1!="dirs.thread" { print $0; }
-    #     END {
-    #         len=split(targets,a," "); split(labels,b," ");
-    #         for(i=1;i<=len;i++) c[a[i]]=b[i];
-    #         for(key in c) {
-    #             label=c[key];
-    #             printf "\n";
-    #             printf "dirs.%s.path = /usr/local/scripts/apps\n",label;
-    #             len=split(key,fn,"."); fkey=fn[len];
-    #             printf "dirs.%s.file-pattern = \^(%s.csv)\$\n",label,fkey;
-    #             printf "dirs.%s.cpusleep = 200\n",label;
-    #             printf "dirs.%s.bufMax = 1048576\n",label;
-    #             printf "dirs.%s.code = GBK\n",label;
-    #             printf "dirs.%s.redFromBegin = false\n",label;
-    #             printf "dirs.%s.otherInfo = SOURCE_TYPE,,opsware\n",label;
-    #             printf "dirs.%s.isWindows = false\n",label;
-    #             printf "dirs.%s.encode = 0\n",label;
-    #             printf "dirs.%s.topic = app.%s\n",label,key;
-    #         }
-    #     }' ${conf} 2>/dev/null)
-
-    #
-    # sample:
-    # varLogDir5.analyser=varLogDir5-an
-    # varLogDir5.path=/usr/local/scripts/apps
-    # varLogDir5.pattern=^(netconn.csv)$
-    # varLogDir5.instant=true
-    # varLogDir5.isRecursive=false
-    # varLogDir5-an.encode=UTF-8
-    # varLogDir5-an.position=-1
-    # varLogDir5-an.extends.SOURCE_TYPE=opsware
-    # varLogDir5-an.extends.TOPIC=app.netconn
-    #
-    # sample:
-    # process.watcher=varLogDir2 varLogDir3 varLogDir varLogDir4
-    #
-    content=$(awk -v labels="${labels}" -v targets="${targets}" -F'=' '
-        $1=="process.watcher" {
-            printf "%s %s\n",$0,labels;
-        }
-        $1!="process.watcher" { print $0; }
-        END {
-            len=split(targets,a," "); split(labels,b," ");
-            for(i=1;i<=len;i++) c[a[i]]=b[i];
-            for(key in c) {
-                label=c[key];
-                printf "\n";
-                printf "%s.analyser=%s-an\n",label,label;
-                printf "%s.path=/usr/local/scripts/apps\n",label;
-                len=split(key,fn,"."); fkey=fn[len];
-                printf "%s.file-pattern = \^(%s.csv)\$\n",label,fkey;
-                printf "%s.instant=true\n",label;
-                printf "%s.isRecursive=false\n",label;
-                printf "%s-an.encode=UTF-8\n",label;
-                printf "%s-an.position=-1\n",label;
-                printf "%s-an.extends.SOURCE_TYPE=opsware\n",label;
-                printf "%s.TOPIC=app.%s\n",label,key;
-            }
-        }' ${conf} 2>/dev/null)
-    
     # backup flume-conf.properties before update
     typeset nf="${conf}.sav.$(date +%Y%m%d.%H%M%S)"
     log "backup config file to ${nf}"
