@@ -256,14 +256,18 @@ function adaptive_conf_toflume {
             echo $conf
         fi
     done
-    logerr "flume config file is not exists"
-    exit 188
 }
 
 function add_config {
     # typeset conf="/opt/flume/conf/flume-conf.properties"
     #typeset conf="/opt/flume/conf/collect-conf.properties"
     typeset conf=$(adaptive_conf_toflume)
+    if [[ -z $conf ]]
+    then
+        logerr "flume config file is not exists and exit the programe!"
+        exit 188
+    fi
+    log "flume config file is $conf"
     log "checking flume existence"
     # check if flume has been installed
     if [[ ! -f ${conf} ]]
