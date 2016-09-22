@@ -181,7 +181,7 @@ def backup_flume_conf(conf):
 def adptive_conf_toflume(confdir):
     conf1=os.path.join(confdir,"flume-conf.properties")
     conf2=os.path.join(confdir,"collect-conf.properties")
-    conf3=os.path.join(confdir,"flume-conf.properties")
+    conf3=os.path.join(confdir,"collect-conf.propertiesflume-conf.properties")
     for conf in [conf1,conf2,conf3]:
         if os.path.exists(conf):
             return conf
