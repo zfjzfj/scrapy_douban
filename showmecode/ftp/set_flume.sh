@@ -248,12 +248,13 @@ function download_flume {
 function adaptive_conf_toflume {
     typeset conf1="/opt/flume/conf/flume-conf.properties"
     typeset conf2="/opt/flume/conf/collect-conf.properties"
-    typeset conf3="/opt/flume/conf/predator-conf.properties"
+    typeset conf3="/opt/predator/client-core/plugins/flume/conf/collect-conf.properties"
     for conf in $conf1 $conf2 $conf3
     do
         if [[ -f ${conf} ]]
         then
             echo $conf
+            break
         fi
     done
 }
