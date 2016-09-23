@@ -247,6 +247,8 @@ function download_flume {
 
 function write_early_flume_conf {
     typeset content
+    lables=$1
+    targets=$2
     content=$(awk -v labels="${labels}" -v targets="${targets}" '
         $1=="dirs" {
             printf "%s %s\n",$0,labels;
@@ -294,8 +296,8 @@ function write_latest_flume_conf {
     # process.watcher=varLogDir2 varLogDir3 varLogDir varLogDir4
     #
     typeset content
-    lables=$0
-    targets=$1
+    lables=$1
+    targets=$2
     content=$(awk -v labels="${labels}" -v targets="${targets}" -F'=' '
         $1=="process.watcher" {
             printf "%s %s\n",$0,labels;
@@ -322,7 +324,7 @@ function write_latest_flume_conf {
 
 }
 function write_flume_conf {
-    conf=$0
+    conf=$1
     typeset conferlier="/opt/flume/conf/flume-conf.properties"
     if [[ "$conf" = "$conferlier"  ]]
     then
