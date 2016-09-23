@@ -178,20 +178,22 @@ def backup_flume_conf(conf):
     logging.info('backup flume conf : [%s]' % new_conf)
     shutil.copy(conf, new_conf)
 
-def adptive_conf_toflume(confdir):
+def adapative_conf_toflume(confdir):
     conf1=os.path.join(confdir,"flume-conf.properties")
     conf2=os.path.join(confdir,"collect-conf.properties")
-    conf3=os.path.join(confdir,"collect-conf.propertiesflume-conf.properties")
-    for conf in [conf1,conf2,conf3]:
-        if os.path.exists(conf):
-            return conf
-    return None
+    if os.path.exists(conf2):
+        return  conf2
+    elif os.path.exists(conf1):
+        return conf1
+    else:
+        return conf2
+
 
 def set_flume(base):
     '''Set flume config
     '''
     base_conf = os.path.join(base, 'conf')
-    conf = adptive_conf_toflume(base_conf)
+    conf = adapative_conf_toflume(base_conf)
     if not conf:
         logging.error("%s conf file of flume is not exists,and exit programe" % (conf))
         exit()
