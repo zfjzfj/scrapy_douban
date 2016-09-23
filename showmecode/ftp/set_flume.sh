@@ -294,6 +294,8 @@ function write_latest_flume_conf {
     # process.watcher=varLogDir2 varLogDir3 varLogDir varLogDir4
     #
     typeset content
+    lables=$0
+    targets=$1
     content=$(awk -v labels="${labels}" -v targets="${targets}" -F'=' '
         $1=="process.watcher" {
             printf "%s %s\n",$0,labels;
@@ -320,10 +322,16 @@ function write_latest_flume_conf {
 
 }
 function write_flume_conf {
+    conf=$0
+    typeset conferlier="/opt/flume/conf/flume-conf.properties"
+    if [[ "$conf" = "$conferlier"  ]]
+    then
+        write_early_flume_conf $labels $targets
+    else
+        write_latest_flume_conf $labels $targets
+    fi
 
 
-
-    
 }
 function adaptive_conf_toflume {
     typeset conf1="/opt/flume/conf/flume-conf.properties"
@@ -331,7 +339,7 @@ function adaptive_conf_toflume {
     typeset conf2="/opt/flume/conf/collect-conf.properties"
     typeset conf3dir="/opt/predator/client-core/plugins/flume/conf"
     typeset conf3="/opt/predator/client-core/plugins/flume/conf/collect-conf.properties"
-    for conf in $conf3 $con3dir $conf2 $conf2dir $conf1
+    for conf in $conf3 $con3dir $conf1 $conf2 $conf2dir 
     do
         if [[ -e ${conf} ]]
         then
@@ -348,7 +356,7 @@ function adaptive_conf_toflume {
 }
 
 function add_config {
-    # typeset conf="/opt/flume/conf/flume-conf.properties"
+
     #typeset conf="/opt/flume/conf/collect-conf.properties"
     typeset conf=$(adaptive_conf_toflume)
     if [[ -z $conf ]]
@@ -453,14 +461,13 @@ function add_config {
         [[ -z ${labels} ]] && labels=${label} || labels="${labels} ${label}"
         ((counter+=1))
     done
-    #
-    log "generating content for flume conf setting"
-    # add label to head
     # backup flume-conf.properties before update
     typeset nf="${conf}.sav.$(date +%Y%m%d.%H%M%S)"
     log "backup config file to ${nf}"
     cp ${conf} ${nf}
-
+    log "generating content for flume conf setting"
+    # add label to head
+    write_flume_conf $conf
     # update flume-conf.properties
     log "updating flume-conf.properties"
     echo "${content}" > ${conf}
