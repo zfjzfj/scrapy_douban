@@ -3,7 +3,18 @@
 
 import threading, logging, time
 from kafka import KafkaConsumer, KafkaProducer
+import yaml
+import os
 
+def getConfig(configFile = "config.yaml"):
+    if not os.path.exists(configFile):
+        return None
+    file = open(configFile)
+    config = yaml.load(file)
+    return config
+
+
+# print getConfig()
 
 class Producer(threading.Thread):
     # daemon = True
@@ -22,9 +33,9 @@ class Consumer(threading.Thread):
                                  auto_offset_reset='earliest')
         consumer.subscribe(['SZM00-ZM9-MON'])
         for message in consumer:
-            logging.info message.value
-            logging.info message.topic
-            logging.info message.timestamp
+            logging.info (message.value)
+            logging.info (message.topic)
+            logging.info (message.timestamp)
             logging.info(message.offset)
             logging.info(type(message.value))
             # print (message)
