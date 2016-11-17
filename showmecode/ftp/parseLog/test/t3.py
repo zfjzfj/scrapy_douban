@@ -16,6 +16,4 @@ for i in xrange(0,5):
     thread = worker()
     thread.start()
     tsk.append(thread)
-# for tt in tsk:
-    # tt.join()
 print "This is the end of main thread."

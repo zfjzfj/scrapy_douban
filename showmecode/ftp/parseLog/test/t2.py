@@ -14,8 +14,7 @@ tsk = []
 for i in xrange(0,5):
     time.sleep(0.1)
     thread = worker()
+    thread.setDaemon(True)
     thread.start()
     tsk.append(thread)
-# for tt in tsk:
-    # tt.join()
 print "This is the end of main thread."

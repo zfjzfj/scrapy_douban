@@ -1,7 +1,0 @@
----
-# Config file for ParseLog
--  Server: 99.12.156.134
--  Port: 9092
--  Topic:
-    -  SZM00-ZM9-MON
-    -  SZM00-ZM9-MON
