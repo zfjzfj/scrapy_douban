@@ -60,6 +60,7 @@ class Events(threading.Thread):
         # 批量插入documents,插入一个数组
         coll = self.getCollection()
         # information = [{"name": "xiaoming", "age": "25"}, {"name": "xiaoqiang", "age": "24"}]
+        # print self.record
         recordID = coll.insert(self.record)
         return recordID
 
@@ -78,14 +79,18 @@ class Producer(threading.Thread):
         self.topic = config['kafka']['Producer1']['topic']
         self.ip = config['kafka']['Producer1']['ip']
         self.port = config['kafka']['Producer1']['port']
-        self.producer = KafkaProducer(bootstrap_servers = '%s:%s' % (self.ip,self.port))
+        self.producer = KafkaProducer(bootstrap_servers = '%s:%s' % (self.ip,self.port),\
+                acks = 1)
         self.syslog = syslog
 
     def run(self):
         # pass
         print "starting to send  cmbevents..."
         print self.syslog
-        self.producer.send(self.topic, self.syslog.encode("utf-8"))
+        future = self.producer.send(self.topic,value=self.syslog.encode("utf-8"),\
+                partition = 1)
+        # record_metadata = future.get(timeout=10)
+        # print record_metadata.offset,record_metadata.topic,record_metadata.partition
         print "end to send  cmbevents..."
 
 class Consumer(threading.Thread):
@@ -157,11 +162,10 @@ class Consumer(threading.Thread):
                             sysLogLevel = 1
 
                     syslog = "|_|Kafka|BusinessApp|ERRORLOG|%s|%s|kafka_errorlog|1|%s|%s|%s\
-    |##|Kafka|##|%s|0|0|0|0|一线-开放业务管理|_|" % (self.topic,self.ip,\
+|##|Kafka|##|%s|0|0|0|0|一线-开放业务管理|_|" % (self.topic,self.ip,\
     errTime,item['xLogMsg'],item['xErrCod'],sysLogLevel)
-
-                    p = Producer(syslog)
                     print time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+                    p = Producer(syslog)
                     p.start()
                     # p.join()
                     print "=" * 180
