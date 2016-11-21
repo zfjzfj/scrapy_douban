@@ -22,6 +22,7 @@ import zipfile
 import platform
 import psutil
 import commands
+from new import classobj
 
 import csv
 # sys.path.append("/opt/opsware/pylibs27")
@@ -149,62 +150,49 @@ class Host(object):
                 str = line
                 f.write(str)
 
+    def getProInfo(self):
+
+        CSVContent = []
+        line = {}
+        for cmd in self.CMDList:
+            output = commands.getstatusoutput(cmd['cmd'])
+            if output[0] == 0: PID = int(output[1])
+            if PID > 0:
+                process = psutil.Process(PID)
+                line['software'] = process.name()
+                CSVContent.append(line)
+                line = {}
+        return CSVContent
 
 
 class Linux(Host):
     def __init__(self):
-        pass
-
-    def getProCMD(self):
-        CMDList = [
-             {"process":"FLUME","cmd":""},
-             {"process":"SA","cmd":""},
-             {"process":"ZANYUE","cmd":""},
-             {"process":"ORACLE","cmd":""},
-             {"process":"MYSQl","cmd":""},
-             {"process":"DB2","cmd":""},
-             {"process":"JBOSS","cmd":""},
-             {"process":"WAS","cmd":""},
-             {"process":"TOMCAT","cmd":""}
+        self.CMDList = [
+             {"process":"FLUME","cmd":"ps -ef|grep python|sed -n '1p' |awk '{print $2}' "},
+             # {"process":"SA","cmd":""},
+             # {"process":"ZANYUE","cmd":""},
+             # {"process":"ORACLE","cmd":""},
+             # {"process":"MYSQl","cmd":""},
+             # {"process":"DB2","cmd":""},
+             # {"process":"JBOSS","cmd":""},
+             # {"process":"WAS","cmd":""},
+             # {"process":"TOMCAT","cmd":""}
         ]
 
-        CSVContent = []
-        line = {}
-        for cmd in CMDList:
-            output = commands.getstatusoutput(cmd['cmd'])
-            if output[0] == 0:
-                PID = output[1]
-                if len(PID) > 0 and int(PID) >= 0:
-                    line['software'] = psutil.Process(PID).name()
-                    CSVContent.append(line)
-                    line = {}
 
-        return CSVContent
+    def test(self):
+        print "hello,world!"
+
 
 
 class AIX(Host):
     def __init__(self):
-        pass
-
-    def getProCMD(self):
-        CMDList = [
+        self.CMDList = [
              {"process":"FLUME","cmd":""},
              {"process":"SA","cmd":""},
              {"process":"ORACLE","cmd":""},
              {"process":"DB2","cmd":""},
         ]
-
-        CSVContent = []
-        line = {}
-        for cmd in CMDList:
-            output = commands.getstatusoutput(cmd['cmd'])
-            if output[0] == 0: PID = output[1]
-            if len(PID) > 0 and int(PID) >= 0:
-                line['software'] = psutil.Process(PID).name()
-                CSVContent.append(line)
-                line = {}
-
-        return CSVContent
 
 
 
@@ -212,9 +200,10 @@ class AIX(Host):
 if __name__ == "__main__":
     h = Host()
     hostOS = getattr(h, "sys")
-    print hostOS,type(hostOS)
-    Foo = type(hostOS, (), {})
-    print Foo
+    myClass= classobj("Linux", (eval(hostOS), ), {})
+    myobject = myClass()
+    myobject.test()
+    print myobject.getProInfo()
     # csvFile = '/tmp/os_inst_package.csv'
     # init_logger()
     # get_info(csvFile)
