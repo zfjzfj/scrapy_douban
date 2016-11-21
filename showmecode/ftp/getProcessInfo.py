@@ -21,6 +21,7 @@ import shutil
 import zipfile
 import platform
 import psutil
+import commands
 
 import csv
 # sys.path.append("/opt/opsware/pylibs27")
@@ -157,7 +158,30 @@ class Host(object):
 
 class Linux(Host):
     def __init__(self):
-	pass
+        pass
+
+    def getProCMD(self):
+
+        CMDList = [
+             {"process":"FLUME","cmd":""},
+             {"process":"SA","cmd":""},
+             {"process":"ZANYUE","cmd":""},
+             {"process":"ORACLE","cmd":""},
+             {"process":"MYSQl","cmd":""},
+             {"process":"DB2","cmd":""},
+             {"process":"JBOSS","cmd":""},
+             {"process":"WAS","cmd":""},
+             {"process":"TOMCAT","cmd":""}
+        ]
+
+        CSVContent = []
+        line = {}
+        for cmd in CMDList:
+            output = commands.getstatusoutput(cmd['cmd'])
+            if output[0] == 0: PID = output['cmd']
+            if len(PID) > 0:
+                line['process'] = cmd['process']
+
 
 
 
@@ -166,7 +190,8 @@ class Linux(Host):
 if __name__ == "__main__":
     h =  Host()
     print h.getSysteminfo()
-
+    x = Linux()
+    x.getProCMD()
     # csvFile = '/tmp/os_inst_package.csv'
     # init_logger()
     # get_info(csvFile)
