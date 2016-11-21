@@ -211,7 +211,7 @@ class AIX(Host):
 
 if __name__ == "__main__":
     h = Host()
-    hostOS = getattr(Host, "getSysteminfo")
+    hostOS = getattr(h, "sys")
     print hostOS,type(hostOS)
     Foo = type(hostOS, (), {})
     print Foo
