@@ -105,6 +105,7 @@ def inject():
 
 class Host(object):
     def __init__(self,loglevel=logging.DEBUG):
+        self.sys = platform.system()
 	'''Set logging utility'''
 	os.putenv('TZ', 'BST-8')
 	console = logging.StreamHandler()
@@ -128,19 +129,6 @@ class Host(object):
 	file_handler.setFormatter(fmt)
 	logger.addHandler(file_handler)
 
-    def getSysteminfo(self):
-        '''
-        print(platform.machine())
-        print(platform.node())
-        print(platform.platform(True))
-        print(platform.system())
-        print(platform.uname())
-        print(platform.architecture())
-        print(platform.platform() + ' ' + platform.architecture()[0])
-        print (os_bits())
-        '''
-        return platform.system()
-
     def machine(self):
         """Return type of machine."""
         if os.name == 'nt' and sys.version_info[:2] < (2,7):
@@ -155,13 +143,19 @@ class Host(object):
         machine2bits = {'AMD64': 64, 'x86_64': 64, 'i386': 32, 'x86': 32}
         return machine2bits.get(machine, None)
 
+    def writeCSV(self,data):
+        with open(csvFile, 'w') as f:
+            for line in data:
+                str = line
+                f.write(str)
+
+
 
 class Linux(Host):
     def __init__(self):
         pass
 
     def getProCMD(self):
-
         CMDList = [
              {"process":"FLUME","cmd":""},
              {"process":"SA","cmd":""},
@@ -178,22 +172,51 @@ class Linux(Host):
         line = {}
         for cmd in CMDList:
             output = commands.getstatusoutput(cmd['cmd'])
-            if output[0] == 0: PID = output['cmd']
-            if len(PID) > 0:
-                line['process'] = cmd['process']
+            if output[0] == 0:
+                PID = output[1]
+                if len(PID) > 0 and int(PID) >= 0:
+                    line['software'] = psutil.Process(PID).name()
+                    CSVContent.append(line)
+                    line = {}
+
+        return CSVContent
 
 
+class AIX(Host):
+    def __init__(self):
+        pass
+
+    def getProCMD(self):
+        CMDList = [
+             {"process":"FLUME","cmd":""},
+             {"process":"SA","cmd":""},
+             {"process":"ORACLE","cmd":""},
+             {"process":"DB2","cmd":""},
+        ]
+
+        CSVContent = []
+        line = {}
+        for cmd in CMDList:
+            output = commands.getstatusoutput(cmd['cmd'])
+            if output[0] == 0: PID = output[1]
+            if len(PID) > 0 and int(PID) >= 0:
+                line['software'] = psutil.Process(PID).name()
+                CSVContent.append(line)
+                line = {}
+
+        return CSVContent
 
 
 
 
 if __name__ == "__main__":
-    h =  Host()
-    print h.getSysteminfo()
-    x = Linux()
-    x.getProCMD()
+    h = Host()
+    hostOS = getattr(Host, "getSysteminfo")
+    print hostOS,type(hostOS)
+    Foo = type(hostOS, (), {})
+    print Foo
     # csvFile = '/tmp/os_inst_package.csv'
     # init_logger()
     # get_info(csvFile)
     # inject()
-    # os.remove(csvFile)
+
