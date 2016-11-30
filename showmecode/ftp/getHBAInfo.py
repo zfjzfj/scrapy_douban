@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf8 -*-
-
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
 
 import platform
 import os,sys
