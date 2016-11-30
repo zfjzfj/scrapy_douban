@@ -1,0 +1,128 @@
+ 
+
+ 
+
+ 
+
+发件人: 熊爱国/00011201 
+发送时间: 2016年11月18日 15:44
+收件人: 郑明涛/01030831 <zhengmt@cmbchina.com>
+抄送: 郑少忠/01057006 <zhengshaozhong@cmbchina.com>
+主题: 答复: 请教
+
+ 
+
+ 
+
+ 
+
+AIX：
+
+ITM：
+
+ps -fu itmuser|awk ‘/uxagent/{print $NF}’
+
+如果存在输出，就是安装并运行，否则没有安装。
+
+ 
+
+Flume：
+
+ps -fu operator|awk ‘/org\.apache\.flume\.node\.Application/{print $NF}’
+
+如果存在输出，就是安装并运行，否则没有安装。
+
+ 
+
+WAS:
+
+ps -ef|awk ‘/com\.ibm\.ws\.runtime\.WsServer/{print $NF}’
+
+如果存在输出(或多条)，就是安装并运行，否则没有安装。
+
+ 
+
+Linux:
+
+Flume:
+
+ps -ef|awk ‘/com\.coreware\.Application/{print $NF}’
+
+如果存在输出，就是安装并运行，否则没有安装。
+
+ 
+
+Techsure赞悦
+
+ps -ef|awk ‘/AgentManager\.py/{print $NF}’
+
+如果存在输出，就是安装并运行，否则没有安装。
+
+ 
+
+ps -ef|awk ‘/com\.ibm\.ws\.runtime\.WsServer/{print $NF}’
+
+如果存在输出(或多条)，就是安装并运行，否则没有安装。
+
+ 
+
+Jboss:
+
+ps -ef|awk ‘/org\.jboss/{print $NF}’
+
+如果存在输出(或多条)，就是安装并运行，否则没有安装。
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+发件人: 郑明涛/01030831 
+发送时间: 2016年11月18日 14:42
+收件人: 熊爱国/00011201
+主题: 转发: 请教
+
+ 
+
+爱国：
+
+       少忠不在，这个能否帮忙提供一下，谢谢。
+
+ 
+
+ 
+
+  云平台需判断服务器是否安装了ITM、flum， 赞悦，tivoli 代理，WAS,帮忙提供一下能判断的进程名称，谢谢。
+
+发件人: 郑明涛/01030831 
+发送时间: 2016年11月11日 18:23
+收件人: 郑少忠/01057006 <zhengshaozhong@cmbchina.com>
+主题: 答复: 请教
+
+ 
+
+少爷,帮忙提供一下，谢谢。
+
+ 
+
+发件人: 郑明涛/01030831 
+发送时间: 2016年11月8日 11:10
+收件人: 郑少忠/01057006 <zhengshaozhong@cmbchina.com>
+主题: 请教
+
+ 
+
+少爷：
+
+    云平台需判断服务器是否安装了flum 赞悦tivoli 代理，帮忙提供一下能判断的进程名称，谢谢。
+
+ 
+
+此邮件内容仅代表发送者的个人观点和意见，与招商银行股份有限公司及其下属分支机构的观点和意见无关，招商银行股份有限公司及其下属分支机构不对此邮件内容承担任何责任。此邮件内容仅限收件人查阅，如误收此邮件请立即删除。
