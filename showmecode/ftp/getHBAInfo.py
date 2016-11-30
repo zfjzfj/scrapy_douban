@@ -88,6 +88,12 @@ class Host(object):
     def getHostIP(cls):
         return socket.gethostbyname(cls.getHostName())
 
+    def trans2HEX(self,wwn=(32,0,0,0,201,237,211,27)):
+        wwnStr = ""
+        for num in wwn:
+            str = "%x" % num
+            wwnStr = wwnStr + str + ":"
+        return wwnStr[0:-1]
 
 
 class UnixLikeHost(Host):
@@ -146,15 +152,6 @@ class WinHost(Host):
     def __init__(self):
         """初始化"""
         self.warning_report = ""
-
-    def trans2HEX(self,wwn=(32,0,0,0,201,237,211,27)):
-        wwnStr = ""
-        for num in wwn:
-            str = "%x" % num
-            wwnStr = wwnStr + str + ":"
-        return wwnStr[0:-1]
-
-
 
     def getHBAName(self):
         import wmi

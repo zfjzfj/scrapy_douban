@@ -1,7 +1,0 @@
-let g:spf13_bundle_groups=['general', 'programming', 'misc', 'scala', 'youcompleteme']
-
-map <f5> :!python % runserver -h 0.0.0.0 <cr>
-map <f4> :!python % <cr>
-map <f6> :!bash % <cr>
-
-let g:ycm_path_to_python_interpreter = '/usr/bin/python'
